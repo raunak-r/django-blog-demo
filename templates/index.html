@@ -3,6 +3,10 @@
 
 	<body>
 		<h1> {{ title }} - Posts App</h1>
+
+		{% for post in postList %}
+			* {{ post }}</br>
+		{% endfor %}
 	</body>
 
 </html>
