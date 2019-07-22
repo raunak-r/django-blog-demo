@@ -22,5 +22,5 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-	url(r'^posts/', include("posts.urls")),
+	url(r'^posts/', include("posts.urls", namespace = "posts")),
 ]

@@ -5,7 +5,7 @@
 		<h1> {{ title }} - Posts App</h1>
 
 		{% for post in postList %}
-			* {{ post }}</br>
+			* <a href = '/posts/{{ post.id }}/'>{{ post }}</a></br>
 		{% endfor %}
 	</body>
 

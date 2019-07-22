@@ -7,12 +7,12 @@ from .models import Post
 def create(request):
 	return render(request, "index.html", {})
 
-def detail(request):
+def detail(request, pid):
 	# This returns an error.
 	# instance = Post.objects.get(id = 3)
 
 	# Only 2 posts exist. This will return a 404 not found page.
-	instance = get_object_or_404(Post, id = 1)
+	instance = get_object_or_404(Post, id = pid)
 
 	context = {
 		'title' : "Detail",
