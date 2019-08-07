@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib import messages
 
 from .forms import PostForm
 from .models import Post
@@ -14,7 +15,10 @@ def create(request):
 	if form.is_valid():
 		instance = form.save(commit=False)
 		instance.save()
+		messages.success(request, "Successfully Created")
 		# return HttpResponseRedirect(instance.get_absolute_url())
+	else:
+		messages.error(request, "Not Created")
 
 	context = {
 		"form" : form,
@@ -28,6 +32,7 @@ def update(request, pid=None):
 	if form.is_valid():
 		instance = form.save(commit = False)
 		instance.save()
+		messages.success(request, "Successfully Updated")
 		# return HttpResponseRedirect(instance.get_absolute_url())
 
 	context = {
@@ -38,7 +43,14 @@ def update(request, pid=None):
 
 	return render(request, "post_form.html", context)
 
-def detail(request, pid):
+def delete(request, pid= None):
+	instance = get_object_or_404(Post, id = pid)
+	instance.delete()
+
+	messages.success(request, "Post Deleted")
+	return redirect("posts:list")
+
+def detail(request, pid=None):
 	# This returns an error.
 	# instance = Post.objects.get(id = 3)
 

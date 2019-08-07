@@ -1,0 +1,22 @@
+<!-- DOCTYPE HTML -->
+</html>
+	<head>
+		<title>
+			{% block head_title %}
+				Try Django 1.9
+			{% endblock head_title %}
+		</title>
+		<link rel="stylesheet" href='{% static "css/base.css" %}'>
+		<style>
+			{% block style %}{% endblock style %}
+		</style>
+	</head>
+	<body>
+		<h1> {{ title }} - Posts App</h1>
+
+		{% for post in postList %}
+			* <a href = '/posts/{{ post.id }}/'>{{ post }}</a></br>
+		{% endfor %}
+	</body>
+
+</html>
