@@ -8,7 +8,7 @@ from .models import Post
 
 
 def post_create(request):
-	form = PostForm(request.POST or None)
+	form = PostForm(request.POST or None, request.FILES or None)
 	# if request.method == 'POST':
 	# 	print(request.POST)
 	# 	print(form.cleaned_data.get('title'))
@@ -26,9 +26,9 @@ def post_create(request):
 	}
 	return render(request, "post_form.html", context)
 
-def post_update(request, pid=None):
-	instance = get_object_or_404(Post, id = pid)
-	form = PostForm(request.POST or None, instance = instance)
+def post_update(request, slug=None):
+	instance = get_object_or_404(Post, slug=slug)
+	form = PostForm(request.POST or None, request.FILES or None, instance = instance)
 	
 	if form.is_valid():
 		instance = form.save(commit = False)
@@ -44,19 +44,19 @@ def post_update(request, pid=None):
 
 	return render(request, "post_form.html", context)
 
-def post_delete(request, pid=None):
-	instance = get_object_or_404(Post, id = pid)
+def post_delete(request, slug=None):
+	instance = get_object_or_404(Post, slug=slug)
 	instance.delete()
 
 	messages.success(request, "Successfully Deleted")
 	return redirect("posts:list")
 
-def post_detail(request, pid=None):
+def post_detail(request, slug=None):
 	# This returns an error if not found.
 	# instance = Post.objects.get(id = 3)
 
 	# Only 2 posts exist. This will return a 404 not found page.
-	instance = get_object_or_404(Post, id = pid)
+	instance = get_object_or_404(Post, slug=slug)
 
 	context = {
 		'title' : instance.title,
