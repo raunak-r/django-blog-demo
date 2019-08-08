@@ -1,5 +1,8 @@
 from __future__ import unicode_literals
+
+from django.conf import settings
 from django.core.urlresolvers import reverse
+
 from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
 
@@ -11,6 +14,8 @@ def upload_location(instance, filename):
 	return "%s/%s" %(instance.id, filename)
 
 class Post(models.Model):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
+
 	title = models.CharField(max_length = 120)
 	content = models.TextField()
 	
