@@ -14,7 +14,7 @@ def post_create(request):
 
 	if not request.user.is_authenticated():
 		raise Http404
-		
+
 	form = PostForm(request.POST or None, request.FILES or None)
 	# if request.method == 'POST':
 	# 	print(request.POST)
@@ -71,6 +71,10 @@ def post_detail(request, slug=None):
 
 	# Only 2 posts exist. This will return a 404 not found page.
 	instance = get_object_or_404(Post, slug=slug)
+	if instance.draft or instance.publish > timezone.now().date():
+		if not request.user.is_staff or not request.user.is_superuser:
+			raise Http404
+
 	# share_string = quote_plus(instance.content)
 
 	context = {
@@ -81,8 +85,14 @@ def post_detail(request, slug=None):
 	return render(request, "post_detail.html", context)
 
 def post_list(request):
-	queryset = Post.objects.all()
-	
+	queryset = Post.objects.active()
+	if request.user.is_staff or request.user.is_superuser:
+		queryset = Post.objects.all()
+
+	query = request.GET.get("query")
+	if query:
+		queryset = queryset.filter(title__icontains=query)
+
 	paginator = Paginator(queryset, 3) # Show n contacts per page
 	page_request_var = 'page'
 	page = request.GET.get(page_request_var)

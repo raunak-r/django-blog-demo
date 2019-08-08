@@ -2,13 +2,20 @@
 
 {% block content %}
 	<div class='col-sm-6 col-sm-offset-3'>	
-		<h1>{{ title }} is working!</h1>
+		<h1>{{ title }} List!</h1>
+
+		<form method='GET' action=''>
+			<input type='text' name='query' placeholder="Search Posts" value='{{ request.GET.query }}'/>
+			<input type="submit" value='Search'/>
+		</form>
 
 		{% for obj in object_list %}
 			<div class='row'>
 				<div class="col-sm-12">
 					<div class='thumbnail'>
 						<div class="caption">
+							{% if obj.draft %}
+							<h3>Draft</h3>{% endif %}
 							<h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a>
 							<small>{{ obj.timestamp|timesince }} ago</small></h3>
 					        <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
