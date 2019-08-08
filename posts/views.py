@@ -66,19 +66,21 @@ def post_detail(request, pid=None):
 
 def post_list(request):
 	queryset = Post.objects.all()
-	# paginator = Paginator(queryset, 25) # Show 25 contacts per page
-
-	# page = request.GET.get('page')
- #    try:
- #    	queryset = paginator.get_page(page)
- #    except PageNotAnInteger:
- #    	queryset = paginator.page(1)
- #    except EmptyPage:
- #    	queryset = paginator.page(paginator.num_pages)
+	
+	paginator = Paginator(queryset, 3) # Show n contacts per page
+	page_request_var = 'page'
+	page = request.GET.get(page_request_var)
+	try:
+		queryset = paginator.page(page)
+	except PageNotAnInteger:
+		queryset = paginator.page(1)
+	except EmptyPage:
+		queryset = paginator.page(paginator.num_pages)
 
 	context = {
 		'object_list' : queryset,
 		'title' : "List",
+		'page_request_var' : page_request_var
 	}
 	
 	return render(request, "post_list.html", context)
