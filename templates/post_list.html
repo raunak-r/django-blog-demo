@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+		<h1>{{ title }} is working!</h1>
+
+		{% for obj in object_list %}
+			{{ obj.id }}<br/>
+			<!-- {% url "posts:detail" pid=obj.id %} -->
+			<a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a><br/>
+			
+			Content - {{ obj.content }}<br/>
+			Time - {{ obj.timestamp }}<br/>
+			Updated - {{ obj.updated }}<br/>
+			</br>
+		{% endfor %}
+{% endblock content %}

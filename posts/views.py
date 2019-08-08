@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .forms import PostForm
 from .models import Post
 
-# Create your views here.
-def create(request):
+
+def post_create(request):
 	form = PostForm(request.POST or None)
 	# if request.method == 'POST':
 	# 	print(request.POST)
@@ -16,7 +17,7 @@ def create(request):
 		instance = form.save(commit=False)
 		instance.save()
 		messages.success(request, "Successfully Created")
-		# return HttpResponseRedirect(instance.get_absolute_url())
+		return HttpResponseRedirect(instance.get_absolute_url())
 	else:
 		messages.error(request, "Not Created")
 
@@ -25,50 +26,59 @@ def create(request):
 	}
 	return render(request, "post_form.html", context)
 
-def update(request, pid=None):
+def post_update(request, pid=None):
 	instance = get_object_or_404(Post, id = pid)
 	form = PostForm(request.POST or None, instance = instance)
 	
 	if form.is_valid():
 		instance = form.save(commit = False)
 		instance.save()
-		messages.success(request, "Successfully Updated")
-		# return HttpResponseRedirect(instance.get_absolute_url())
+		messages.success(request, "<a href='#'>Item</a> Saved", extra_tags='html_safe')
+		return HttpResponseRedirect(instance.get_absolute_url())
 
 	context = {
 		'title' : instance.title,
-		'content' : instance.content,
+		'instance' : instance,
 		'form' : form,
 	}
 
 	return render(request, "post_form.html", context)
 
-def delete(request, pid= None):
+def post_delete(request, pid=None):
 	instance = get_object_or_404(Post, id = pid)
 	instance.delete()
 
-	messages.success(request, "Post Deleted")
+	messages.success(request, "Successfully Deleted")
 	return redirect("posts:list")
 
-def detail(request, pid=None):
-	# This returns an error.
+def post_detail(request, pid=None):
+	# This returns an error if not found.
 	# instance = Post.objects.get(id = 3)
 
 	# Only 2 posts exist. This will return a 404 not found page.
 	instance = get_object_or_404(Post, id = pid)
 
 	context = {
-		'title' : "Detail",
+		'title' : instance.title,
 		'instance' : instance,
 	}
 	return render(request, "post_detail.html", context)
 
-def listall(request):
+def post_list(request):
 	queryset = Post.objects.all()
+	# paginator = Paginator(queryset, 25) # Show 25 contacts per page
+
+	# page = request.GET.get('page')
+ #    try:
+ #    	queryset = paginator.get_page(page)
+ #    except PageNotAnInteger:
+ #    	queryset = paginator.page(1)
+ #    except EmptyPage:
+ #    	queryset = paginator.page(paginator.num_pages)
 
 	context = {
-		'postList' : queryset,
+		'object_list' : queryset,
 		'title' : "List",
 	}
 	
-	return render(request, "index.html", context)
+	return render(request, "post_list.html", context)
